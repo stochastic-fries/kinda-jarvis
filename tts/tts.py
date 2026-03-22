@@ -10,6 +10,7 @@ def speak(text: str):
     text = text.replace("*"," . ")
     text = text.replace("_","-")
     text = text.replace('/',' . ')
+    text = text.replace("-", '.')
     with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
         f.write(text)
         tmp_path = f.name

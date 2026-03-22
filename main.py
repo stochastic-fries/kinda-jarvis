@@ -2,7 +2,9 @@ import ollama
 import subprocess
 from tts.tts import speak
 from tools import TOOL_SCHEMA, TOOL_FUNC
+from stt import preload, listen
 
+preload() # load stt mod
 SYSTEM = {"role": "system", "content": "you are a desktop assistant , your personality traits are - sarcastics , humourous, frank , straightforword, you can call tools to work around on the desktop. answer short - be concise"}
 #MODEL = "qwen3.5:9b-q4_K_M"
 #MODEL = "qwen3.5:4b"
@@ -45,7 +47,8 @@ def main ():
     history = []
 
     while True:
-        user_input = input("You: ")
+        choose  = input("type anything for text , leave empty for speech  :  ")
+        user_input = input("You: ") if choose == 1 else  listen()
         reply, history = run(user_input, history)
         speak(reply)
         print(f"Assistant: {reply}")
