@@ -14,19 +14,21 @@
 
 from . import get_current_time
 from . import open_app
-from .system_stats import schema as stats_schema , get_system_stats
+from .system_stuff import schema as system_schema , get_system_stats
 from .bluetooth_control import schema as bt_schema , func as bt_func #dictionary returning funcs
 from .file_operations import schema as file_ops_schema , func as file_ops
 from .manage_windows import schema as  windows_schema, func as window
+from .web_search import schema as web_search_schema , func as search
 
 
 TOOL_SCHEMA = [
     get_current_time.schema,
     open_app.schema,
-    stats_schema,
+    *system_schema,
     *bt_schema,
     *file_ops_schema,
-    *windows_schema
+    *windows_schema,
+    *web_search_schema
 
 ]
 
@@ -43,4 +45,7 @@ TOOL_FUNC = {
     "list_directory"            :           file_ops['list_directory'],
     "list_active_windows"       :           window['list_active_windows'],
     "switch_workspace"          :           window['switch_workspace'],
+    "web_search"                :           search['web_search'],
+    "news_search"               :           search['news_search'],
+    "product_search"            :           search['product_search']
 }

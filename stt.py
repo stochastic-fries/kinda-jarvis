@@ -11,7 +11,7 @@ import pyaudio
 
 # Config
 
-MODEL_SIZE   = "tiny.en"
+MODEL_SIZE   = "small"
 BASE = "int8"
 SAMPLE_RATE  = 16000
 CHUNK        = 1024
@@ -34,7 +34,7 @@ def get_model():
     #Return the model, loading it now if preload() was never called
     if not _ready.is_set():
         preload()
-    _ready.wait()
+    _ready.is_set()
     return _model
 
 
@@ -58,6 +58,7 @@ def record_until_silence():
         else:
             silent_chunks = 0
         if silent_chunks > max_silent and len(frames) > 10:
+            print("done recording")
             break
 
     stream.stop_stream()

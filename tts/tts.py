@@ -35,4 +35,4 @@ def speak(text: str):
 
 
 def play_audio(filepath: str):
-    subprocess.run(["aplay", filepath])   # Linux
+    subprocess.run(["aplay", "-r", "22050", "-f", "S16_LE", "-c", "1", filepath])

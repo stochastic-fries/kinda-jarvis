@@ -1,15 +1,21 @@
 import psutil
 import shutil
 
-schema = {
-    "name": "get_system_stats",
-    "description": "Get RAM usage, CPU usage, disk space, and battery level. Call this when the user asks about ram, memory, cpu, processor, disk, storage, or battery.",
-    "parameters": {
-        "type": "object",
-        "properties": {},
-        "required": [],
+schema = [
+    {
+        "type":'function',
+        "function":{
+            "name": "get_system_stats",
+            "description": "Get RAM usage, CPU usage, disk space, and battery level. Call this when the user asks about ram, memory, cpu, processor, disk, storage, or battery.",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        }
     },
-}
+
+]
 
 def get_system_stats() :
     vm = psutil.virtual_memory()

@@ -48,7 +48,7 @@ def main ():
 
     while True:
         choose  = input("type anything for text , leave empty for speech  :  ")
-        user_input = input("You: ") if choose == 1 else  listen()
+        user_input = input("You: ") if choose  else  listen()
         reply, history = run(user_input, history)
         speak(reply)
         print(f"Assistant: {reply}")
