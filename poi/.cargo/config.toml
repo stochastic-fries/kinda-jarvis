@@ -2,7 +2,6 @@
 runner = "espflash flash --monitor --chip esp32"
 
 [env]
-ESP_LOG="info"
 
 [build]
 rustflags = [
@@ -12,4 +11,4 @@ rustflags = [
 target = "xtensa-esp32-none-elf"
 
 [unstable]
-build-std = ["core"]
+build-std = ["alloc", "core"]
