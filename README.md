@@ -1,30 +1,7 @@
 # kinda-jarvis
-a desktop assistant , but not just on desktop , it sits on your desk <br>
-this AI assistant not just talks to you but also does work of you , <br>
-it can do all the stuff you can see in tools/ , but since i am just a highschool student <br>
-and  coding for fun , i am not putting much efforts to make it crossplatform , that is a future 
-problem and i know i'll have to face it so i am taking an approach where i'll be able to make it 
-cross platform , but for now i am in my last year of highschool so i have to focus on that also 
-<br>
-this AI has a wall-E build on a physical desk, which has microphone and speaker , some other sensors,
-servos etc. 
-<br>
-wall-E records processes and sends data to your laptop or pc and then your device running llms 
-processes makes a audio file and sends to esp32 then it is played to onto speaker
-<br>
-even tho wall-E is sitting on your desk it can work on your computer and talk all the stuff it can  do is stated in tools/ reffer there
-(ready!, if anyone waana help making it cross platform)
-<br>
-<h1> wall-E plan dropped probably i'll be making another robot</h1>
-# Privacy
-well , as this is also opensource and i respect your privacy , you have full freedom to choose any
-AI model you want , change the model name in main.py , also if not using a cloud model you will have
-to download the model first using ollama pull , and i using cloud model you'll still have to do it 
-but the donwload won't take time and you'll have to setup SSH keys on the ollama website , reffer to
-their documentation , for local models nothing leaves your computer ,the ESP32 and the path between 
-your device and esp32, and for cloud models idk your privacy may be risked , i am not responsible 
-for that , anyways it's there property
-<br>
+A robot which is your buddy and can cure your loneliness 
+is also very smart and productive
+
 
 # DEPENDENCIES 
 system (Arch Linux , Hyprland(wayland(obv.))) -><br>
