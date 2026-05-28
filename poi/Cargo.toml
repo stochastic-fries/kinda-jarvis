@@ -11,8 +11,7 @@ path = "./src/bin/main.rs"
 [dependencies]
 esp-hal = { version = "~1.1.0", features = ["esp32", "unstable"] }
 
-esp-rtos = { version = "0.3.0", features = ["embassy", "esp-alloc", "esp32"] }
-
+esp-rtos = { version = "0.3.0", features = ["embassy", "esp-alloc", "esp-radio", "esp32"] }
 esp-bootloader-esp-idf = { version = "0.5.0", features = ["esp32"] }
 
 embassy-executor = { version = "0.10.0", features = [] }
@@ -24,6 +23,12 @@ static_cell      = "2.1.1"
 
 esp-println = { version = "0.13", features = ["esp32", "log"] }
 log = "0.4"
+
+
+esp-radio        = { version = "0.18.0", features = ["esp32", "wifi"] }
+embassy-net      = { version = "0.9.1",  features = ["tcp", "dns", "dhcpv4", "medium-ethernet"] }
+embassy-sync     = "0.8.0"
+heapless         = "0.9"
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.dev]
