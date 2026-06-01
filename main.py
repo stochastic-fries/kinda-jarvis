@@ -6,10 +6,9 @@ from stt import preload, listen
 from memory.manager import get_context,  save_summary
 
 preload() # load stt mod
-#MODEL = "qwen3.5:9b-q4_K_M"
-#MODEL = "qwen3.5:4b"
 #MODEL = "qwen3.5:397b-cloud"
-MODEL = "gemma4:31b-cloud"
+#MODEL = "gemma4:31b-cloud"
+MODEL = "gemma4:e2b"
 
 #func that runs the model
 def run(user_input, history):

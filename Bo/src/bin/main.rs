@@ -11,7 +11,9 @@ use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_hal::clock::CpuClock;
 use esp_hal::timer::timg::TimerGroup;
+use esp_println::println;
 
+use Bo::tasks::wifi::{init_wifi, net_task, wifi_connection_task, wifi};
 #[panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop {}
@@ -27,6 +29,8 @@ esp_bootloader_esp_idf::esp_app_desc!();
     clippy::large_stack_frames,
     reason = "it's not unusual to allocate larger buffers etc. in main"
 )]
+
+
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {
     // generator version: 1.3.0
@@ -41,17 +45,21 @@ async fn main(spawner: Spawner) -> ! {
     let sw_interrupt =
         esp_hal::interrupt::software::SoftwareInterruptControl::new(peripherals.SW_INTERRUPT);
     esp_rtos::start(timg0.timer0, sw_interrupt.software_interrupt0);
+//__________________________________________________________________________________________________________________
+//                                  
+//                                              --WIFI--
 
-    let (mut _wifi_controller, _interfaces) =
-        esp_radio::wifi::new(peripherals.WIFI, Default::default())
-            .expect("Failed to initialize Wi-Fi controller");
+    //let (mut _wifi_controller, _interfaces) =
+    //    esp_radio::wifi::new(peripherals.WIFI, Default::default())
+    //        .expect("Failed to initialize Wi-Fi controller");
 
-    // TODO: Spawn some tasks
-    let _ = spawner;
-
+    let (wifi_controller, runner, stack) = init_wifi(peripherals.WIFI);
+    spawner.spawn(wifi_connection_task(wifi_controller).expect("problem with wifi connector"));
+    spawner.spawn(net_task(runner).expect("problem with wifi daemon"));
+    spawner.spawn(wifi(stack).expect("there's a problem in the wifi programe"));
+//___________________________________________________________________________________________________________________
     loop {
         Timer::after(Duration::from_secs(1)).await;
     }
 
-    // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.1.0/examples
 }
