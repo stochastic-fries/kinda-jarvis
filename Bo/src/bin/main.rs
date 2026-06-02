@@ -12,8 +12,10 @@ use embassy_time::{Duration, Timer};
 use esp_hal::clock::CpuClock;
 use esp_hal::timer::timg::TimerGroup;
 use esp_println::println;
+use esp_hal::i2c::master::{I2c, Config as I2cConfig};
 
 use Bo::tasks::wifi::{init_wifi, net_task, wifi_connection_task, wifi};
+use Bo::tasks::servo::ServoController;
 #[panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop {}
@@ -58,7 +60,20 @@ async fn main(spawner: Spawner) -> ! {
     spawner.spawn(net_task(runner).expect("problem with wifi daemon"));
     spawner.spawn(wifi(stack).expect("there's a problem in the wifi programe"));
 //___________________________________________________________________________________________________________________
-    loop {
+
+//
+//                                              --servos--
+//                                          (via PCA9685 (i2c))
+
+    let i2c = I2c::new(peripherals.I2C0, I2cConfig::default())
+    .unwrap()
+    .with_sda(peripherals.GPIO21)
+    .with_scl(peripherals.GPIO22)
+    .into_async();
+
+    let mut servos = ServoController::new(i2c).await;
+//___________________________________________________________________________________________________
+loop {
         Timer::after(Duration::from_secs(1)).await;
     }
 

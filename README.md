@@ -59,5 +59,3 @@ try to do on esp itself, <br>
 <br><br>
 (i'll upload the circuit diagram soon , after i am done testing)
 <br>
-
-if you waana guide me or collaborate then feel free to contact me 
