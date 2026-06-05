@@ -8,13 +8,38 @@ use embassy_net::{tcp::TcpSocket, IpEndpoint, IpAddress};
 use embedded_io_async::Write;
 
 
-const SSID:     &str = "yashas";  // trying not to upload this on github 
-const PASSWORD: &str = "$5YJshashi";  // please don't hunt for these in future commits :)
+const SSID:     &str = "";  // trying not to upload this on github 
+const PASSWORD: &str = "";  // please don't hunt for these in future commits :)
 
-const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 39); 
+const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 183); 
 const WS_PORT:   u16        = 9090;
 
 static STACK_RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
+
+
+//_______________________________________________________________________________________________________
+//                          -- Helper functions --
+//                          _______________________
+fn decode_ws_frame<'a>(buf: &'a mut [u8], n: usize) -> Option<&'a [u8]> {
+    if n < 6 { return None; }
+    
+    // payload length is in the lower 7 bits of byte 1
+    let len = (buf[1] & 0x7F) as usize;
+    
+    // mask key is always bytes 2,3,4,5
+    let mask = [buf[2], buf[3], buf[4], buf[5]];
+    
+    // unmask the payload starting at byte 6
+    for i in 0..len {
+        buf[6 + i] ^= mask[i % 4];
+    }
+    
+    // return the unmasked payload
+    Some(&buf[6..6 + len])
+}
+
+
+//_________________________________________________________________________________________________________
 
 #[embassy_executor::task]
 pub async fn wifi(stack:Stack<'static>){
@@ -57,24 +82,46 @@ pub async fn wifi(stack:Stack<'static>){
             continue;
         }
 
-        // read server response — should contain "101 Switching Protocols"
-        let mut resp = [0u8; 256];
+      
+        let mut resp = [0u8; 512];
         match socket.read(&mut resp).await {
             Ok(n) => {
+                
                 let s = core::str::from_utf8(&resp[..n]).unwrap_or("?");
                 println!("server response: {}", s);
-                if !s.contains("101") {
+                if !s.contains("\r\n\r\n") {
+                    println!("WS upgrade failed!");
+                    continue;
+                }
+                if !core::str::from_utf8(&resp[..n]).unwrap_or("").contains("101") {
                     println!("WS upgrade failed!");
                     continue;
                 }
                 println!("WebSocket connected!");
-            }
+            } 
             Err(_) => continue,
         }
-
-
+    
+        let mut buf = [0u8; 256];
         loop {
-            Timer::after(Duration::from_secs(1)).await;
+            match socket.read(&mut buf).await {
+                Ok(0) => { println!("disconnected"); break; }
+                Ok(n) => {
+                    if let Some(payload) = decode_ws_frame(&mut buf, n) {
+                        if payload.len() >= 4 {
+                            let cat = payload[0];
+                            let cmd = payload[1];
+                            let p1  = payload[2];
+                            let p2  = payload[3];
+                            match (cat, cmd) {
+                                (0x01, 0x01) => println!("nod"),
+                                _ => println!("unknown: {:#x} {:#x}", cat, cmd),
+                            }
+                        }
+                    }
+                }
+                Err(e) => { println!("error: {:?}", e); break; }
+            }
         }
     }
 }

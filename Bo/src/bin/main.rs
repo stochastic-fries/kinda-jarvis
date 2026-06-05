@@ -32,6 +32,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
     reason = "it's not unusual to allocate larger buffers etc. in main"
 )]
 
+// servo hardware limits (from your calibration)
 
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {

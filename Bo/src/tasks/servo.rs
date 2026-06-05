@@ -10,7 +10,6 @@ pub const CH_TILT:   Channel = Channel::C1;  // up/down
 pub const CH_ROTATE: Channel = Channel::C2;  // rotate
 
 
-// servo hardware limits (from your calibration)
 const SERVO_MIN: i32 = 90;
 const SERVO_MAX: i32 = 480;
 
@@ -21,9 +20,10 @@ pub fn angle_to_pwm(angle: i32) -> u16 {
 }
 
 //servo centers
-const PAN_CENTER: u16 = 285;        //90deg, 
-const TILT_CENTER: u16 = 285;       //90deg, 
-const ROTATE_CENTER: u16 = 285;     //90deg, 
+// 285 is the servo center
+const PAN_CENTER: u16 = 285;        //decrease to loook to right (his right), 
+const TILT_CENTER: u16 = 260;       // decrease to look up 
+const ROTATE_CENTER: u16 = 260;     // decrease to make robot tile left(his left)     
 
 pub struct ServoController {
     pca: Pca9685<I2c<'static, Async>>,
@@ -36,9 +36,9 @@ impl ServoController {
         pca.enable().await.unwrap();
 
         // boot position — all centered
-        pca.set_channel_on_off(CH_TILT,   0, angle_to_pwm(TILT_CENTER.into())).await.unwrap();
-        pca.set_channel_on_off(CH_PAN,    0, angle_to_pwm(PAN_CENTER.into())).await.unwrap();
-        pca.set_channel_on_off(CH_ROTATE, 0, angle_to_pwm(ROTATE_CENTER.into())).await.unwrap();
+        pca.set_channel_on_off(CH_TILT,   0 , TILT_CENTER).await.unwrap();
+        pca.set_channel_on_off(CH_PAN,    0, PAN_CENTER).await.unwrap();
+        pca.set_channel_on_off(CH_ROTATE, 0, ROTATE_CENTER).await.unwrap();
 
         println!("servos initialized!");
         Self { pca }
