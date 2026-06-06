@@ -16,6 +16,7 @@ use esp_hal::i2c::master::{I2c, Config as I2cConfig};
 
 use Bo::tasks::wifi::{init_wifi, net_task, wifi_connection_task, wifi};
 use Bo::tasks::servo::ServoController;
+use Bo::algos::sorter::Sorter;
 #[panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop {}
@@ -73,9 +74,13 @@ async fn main(spawner: Spawner) -> ! {
     .into_async();
 
     let mut servos = ServoController::new(i2c).await;
+    *Bo::tasks::servo::SERVO.lock().await = Some(servos);
 //___________________________________________________________________________________________________
-loop {
-        Timer::after(Duration::from_secs(1)).await;
-    }
 
-}
+//                                          --servo movements--
+    spawner.spawn(Sorter().expect("sorter failed"));
+    loop {
+            Timer::after(Duration::from_secs(1)).await;
+        }
+
+    }

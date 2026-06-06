@@ -11,7 +11,7 @@ use embedded_io_async::Write;
 const SSID:     &str = "";  // trying not to upload this on github 
 const PASSWORD: &str = "";  // please don't hunt for these in future commits :)
 
-const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 183); 
+const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 70); 
 const WS_PORT:   u16        = 9090;
 
 static STACK_RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
@@ -114,8 +114,12 @@ pub async fn wifi(stack:Stack<'static>){
                             let p1  = payload[2];
                             let p2  = payload[3];
                             match (cat, cmd) {
-                                (0x01, 0x01) => println!("nod"),
-                                _ => println!("unknown: {:#x} {:#x}", cat, cmd),
+                                _ => {
+                                    println!("recieved something");
+                                    crate::shared::CMD_CHANNEL.send(
+                                        crate::shared::Command { cat, cmd, p1, p2 }
+                                    ).await;
+                                }
                             }
                         }
                     }

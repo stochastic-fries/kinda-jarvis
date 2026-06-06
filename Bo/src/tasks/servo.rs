@@ -3,6 +3,7 @@ use esp_hal::i2c::master::I2c;
 use esp_hal::Async;
 use esp_println::println;
 use pwm_pca9685::{Address, Channel, Pca9685};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 
 // servo channels
 pub const CH_PAN:    Channel = Channel::C0;  // left/right  
@@ -25,10 +26,11 @@ const PAN_CENTER: u16 = 285;        //decrease to loook to right (his right),
 const TILT_CENTER: u16 = 260;       // decrease to look up 
 const ROTATE_CENTER: u16 = 260;     // decrease to make robot tile left(his left)     
 
+pub static SERVO: Mutex<CriticalSectionRawMutex, Option<ServoController>> = Mutex::new(None);
 pub struct ServoController {
-    pca: Pca9685<I2c<'static, Async>>,
+    pub pca: Pca9685<I2c<'static, Async>>,
 }
-
+unsafe impl Send for ServoController {}
 impl ServoController {
     pub async fn new(i2c: I2c<'static, Async>) -> Self {
         let mut pca = Pca9685::new(i2c, Address::default()).unwrap();
