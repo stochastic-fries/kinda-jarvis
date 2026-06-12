@@ -8,10 +8,10 @@ use embassy_net::{tcp::TcpSocket, IpEndpoint, IpAddress};
 use embedded_io_async::Write;
 
 
-const SSID:     &str = "";  // trying not to upload this on github 
-const PASSWORD: &str = "";  // please don't hunt for these in future commits :)
+const SSID:     &str = "yashas";  // trying not to upload this on github 
+const PASSWORD: &str = "$5YJshashi";  // please don't hunt for these in future commits :)
 
-const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 70); 
+const LAPTOP_IP: IpAddress  = IpAddress::v4(192, 168, 29, 29); 
 const WS_PORT:   u16        = 9090;
 
 static STACK_RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();

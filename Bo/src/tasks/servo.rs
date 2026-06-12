@@ -23,8 +23,8 @@ pub fn angle_to_pwm(angle: i32) -> u16 {
 //servo centers
 // 285 is the servo center
 const PAN_CENTER: u16 = 285;        //decrease to loook to right (his right), 
-const TILT_CENTER: u16 = 260;       // decrease to look up 
-const ROTATE_CENTER: u16 = 260;     // decrease to make robot tile left(his left)     
+const TILT_CENTER: u16 = 285;       // decrease to look up 
+const ROTATE_CENTER: u16 = 285;     // decrease to make robot tile left(his left)     
 
 pub static SERVO: Mutex<CriticalSectionRawMutex, Option<ServoController>> = Mutex::new(None);
 pub struct ServoController {

@@ -1,0 +1,11 @@
+
+SERVO addresses
+
+(i am using PCA9685 which is a 16 channel expander )
+
+(channel-name)    -   (position description)   
+
+    C0            -     head yaw
+    C1            -     head pitch 
+    
+    //arms to be implimented

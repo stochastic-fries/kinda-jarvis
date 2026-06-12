@@ -1,0 +1,45 @@
+the websocket communication protocol is defined as follows --
+
+# format 
+    => (category, command , parameter1, parameter2)
+
+#  codes
+            (   - these are matched and sent as bytes)
+                    (   - this is defined to avoid confusion between server and the hardware)
+                    (   - if robot is told to do something and it does something else this might me the culprit )
+
+    => category index 
+
+        (code)      (alias)            (description)
+        0x01    -   servos      -       for direct control
+        0x02    -   responses   -       basic human responses like nod,deny
+        0x03    -   idle        -       functions that are done when the robot is idle [just to play around]
+    ------------------------------------------------------------------------------------------------------|
+    |//                          NOTE                                                                     |
+    |//   Category =>                                                                                     |
+    |//                 command         -2 parameters                                                     |
+    |//  *EVERY COMMAND TAKES 2 PARAMERTERS (no more no less)   - if a parameter is not required enter 00*|
+    ------------------------------------------------------------------------------------------------------|
+
+    => category 
+            // every command takes 2 parameters (no more no less) - if no parameters enter 00
+        
+        -> Servos(0x01)
+                        // refer servo addresses from Docs/servo_addr.txt
+                (cmd)           (cmd-code)        (parameters)
+            +>  set_angle     -   0x01        -   [p1:(servo address) , p2:(value in degrees)]   
+            +>  set_pwn_ticks -   0x02        -   [p1:(servo address) , p2:(value in pwm ticks of PCA9685)]
+
+        -> Responses(0x02)
+            
+            =>  nod     -   0x01    -   [p1:None(0x00), p2:None(0x00)]             //TO-DO add speed and no. of times as parameters
+            
+            =>  deny    -   0x02    -   [p1:None(0x00), p2:None(0x00)]              //TO-DO add speed and no. of times as parameters
+            
+            =>  think   -   0x03    -   [p1:Left(0x01), p2:None(0x00)]
+                                    -   [p1:Right(0x02) , p2:None(0x00)]
+                                    -   [p1:Fun(0x03), p2:NOne(0x00)]           //TO-DO include when and how to stop 
+
+
+
+    
