@@ -21,21 +21,26 @@ static STACK_RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
 //                          -- Helper functions --
 //                          _______________________
 fn decode_ws_frame<'a>(buf: &'a mut [u8], n: usize) -> Option<&'a [u8]> {
-    if n < 6 { return None; }
-    
-    // payload length is in the lower 7 bits of byte 1
+    if n < 2 { return None; }
+
+    let masked = (buf[1] & 0x80) != 0;
     let len = (buf[1] & 0x7F) as usize;
-    
-    // mask key is always bytes 2,3,4,5
-    let mask = [buf[2], buf[3], buf[4], buf[5]];
-    
-    // unmask the payload starting at byte 6
-    for i in 0..len {
-        buf[6 + i] ^= mask[i % 4];
+
+    if len >= 126 { //won't work for larger payloads
+        return None;
     }
-    
-    // return the unmasked payload
-    Some(&buf[6..6 + len])
+
+    let header_len = if masked { 6 } else { 2 };
+    if n < header_len + len { return None; }
+
+    if masked {
+        let mask = [buf[2], buf[3], buf[4], buf[5]];
+        for i in 0..len {
+            buf[header_len + i] ^= mask[i % 4];
+        }
+    }
+
+    Some(&buf[header_len..header_len + len])
 }
 
 
